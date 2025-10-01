@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F7FA">
+
+    <!-- Thanh công cụ (Toolbar) -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#2196F3"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="Thêm/Sửa ghi chú"
+        app:titleTextColor="#FFFFFF"
+        android:contentDescription="Thanh công cụ" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <EditText
+                        android:id="@+id/edtTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Tiêu đề"
+                        android:textSize="16sp"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="#1F2937"
+                        android:textColorHint="#6B7280"
+                        android:background="@drawable/bg_edittext"
+                        android:layout_marginBottom="12dp"
+                        android:contentDescription="Nhập tiêu đề" />
+
+                    <EditText
+                        android:id="@+id/edtContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nội dung"
+                        android:minLines="4"
+                        android:maxLines="8"
+                        android:gravity="top"
+                        android:inputType="textMultiLine"
+                        android:textSize="14sp"
+                        android:textColor="#1F2937"
+                        android:textColorHint="#6B7280"
+                        android:padding="12dp"
+                        android:background="@drawable/bg_edittext"
+                        android:layout_marginBottom="12dp"
+                        android:contentDescription="Nhập nội dung" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/edtCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:hint="Danh mục"
+                        android:textSize="14sp"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:textColor="#1F2937"
+                        android:textColorHint="#6B7280"
+                        android:background="@drawable/bg_edittext"
+                        android:layout_marginBottom="12dp"
+                        android:completionThreshold="1"
+                        android:contentDescription="Nhập hoặc chọn danh mục" />
+
+                    <!-- ImageView và Button chọn/xóa hình ảnh -->
+                    <ImageView
+                        android:id="@+id/imageViewPlan"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        android:contentDescription="Hình ảnh kế hoạch" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/btnPickImage"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Chọn ảnh"
+                            android:backgroundTint="#4CAF50"
+                            android:textColor="#FFFFFF"
+                            android:contentDescription="Chọn ảnh" />
+
+                        <Button
+                            android:id="@+id/btnRemoveImage"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Xóa ảnh"
+                            android:backgroundTint="#F44336"
+                            android:textColor="#FFFFFF"
+                            android:layout_marginStart="8dp"
+                            android:visibility="gone"
+                            android:contentDescription="Xóa ảnh" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginBottom="12dp">
+
+                        <!-- Nút chọn ngày -->
+                        <ImageButton
+                            android:id="@+id/btnSetReminder"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/iclich"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Chọn ngày"
+                            android:layout_marginEnd="16dp"
+                            app:tint="#4CAF50" />
+
+                        <!-- Nút chọn giờ -->
+                        <ImageButton
+                            android:id="@+id/btnSetReminderTime"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/icchuong"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Chọn giờ"
+                            android:layout_marginEnd="16dp"
+                            app:tint="#2196F3" />
+
+                        <!-- Nút hủy -->
+                        <ImageButton
+                            android:id="@+id/btnCancelReminder"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ichuy"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Hủy nhắc nhở"
+                            app:tint="#F44336" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvReminderPeriod"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#E8F0FE"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:text="⏰ Chưa đặt thời gian"
+                        android:textColor="#1E88E5"
+                        android:textSize="14sp"
+                        android:contentDescription="Thông tin khoảng thời gian" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Lưu Kế Hoạch"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:backgroundTint="#2196F3"
+                android:textColor="#FFFFFF"
+                android:contentDescription="Lưu" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

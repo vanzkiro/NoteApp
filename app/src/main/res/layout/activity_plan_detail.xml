@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F7FA">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#2196F3"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="Chi tiết kế hoạch"
+        app:titleTextColor="#FFFFFF" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Thông tin chi tiết -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Hình ảnh -->
+                    <ImageView
+                        android:id="@+id/imageViewDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        android:contentDescription="Hình ảnh kế hoạch" />
+
+                    <!-- Tiêu đề + Trạng thái -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/tvDetailTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="day 1"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#1F2937" />
+
+                        <TextView
+                            android:id="@+id/tvDetailStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chưa hoàn thành"
+                            android:textSize="14sp"
+                            android:textColor="#F44336"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+
+                    <!-- Danh mục -->
+                    <TextView
+                        android:id="@+id/tvDetailCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Danh mục:"
+                        android:textSize="14sp"
+                        android:textColor="#6B7280"
+                        android:paddingBottom="4dp" />
+
+                    <!-- Nội dung -->
+                    <TextView
+                        android:id="@+id/tvDetailContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Nội dung:"
+                        android:textSize="14sp"
+                        android:textColor="#1F2937"
+                        android:paddingBottom="20dp" />
+
+
+
+                    <TextView
+                        android:id="@+id/tvDetailReminder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Kế hoạch:"
+                        android:textColor="#6B7280"
+                        android:textSize="14sp" />
+
+                    <!-- Tiến độ -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingBottom="0dp">
+
+                        <TextView
+                            android:id="@+id/tvDetailProgress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tiến độ:"
+                            android:textColor="#6B7280"
+                            android:textSize="14sp" />
+
+                        <ProgressBar
+                            android:id="@+id/progressBarDetail"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#E0E0E0"
+                            android:max="100"
+                            android:progress="49"
+                            android:progressTint="#4CAF50" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="3">
+
+                <Button
+                    android:id="@+id/btnEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:backgroundTint="#4CAF50"
+                    android:text="Sửa"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnDelete"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:backgroundTint="#F44336"
+                    android:text="Xóa"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnShare"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:backgroundTint="#2196F3"
+                    android:text="Chia sẻ"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

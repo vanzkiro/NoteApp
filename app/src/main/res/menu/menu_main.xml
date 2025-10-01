@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_clear_all"
+        android:title="Xóa tất cả"
+        android:icon="@android:drawable/ic_menu_delete" />
+    <item
+        android:id="@+id/action_sort"
+        android:title="Sắp xếp"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically" />
+    <item
+        android:id="@+id/action_statistics"
+        android:title="Thống kê"
+        android:icon="@android:drawable/ic_menu_info_details" />
+    <item
+        android:id="@+id/action_about"
+        android:title="Giới thiệu"
+        android:icon="@android:drawable/ic_menu_help" />
+</menu>
