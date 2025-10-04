@@ -9,11 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-
     private static final String DATABASE_NAME = "plans.db";
     private static final int DATABASE_VERSION = 13;
     private static final String TABLE_NAME = "plans";
-
     private static final String COL_ID = "id";
     private static final String COL_TITLE = "title";
     private static final String COL_CONTENT = "content";
@@ -25,11 +23,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_CATEGORY = "category";
     private static final String COL_PROGRESS = "progress";
     private static final String COL_IMAGE_PATH = "image_path"; // Cột mới
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -63,8 +59,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COL_IMAGE_PATH + " TEXT DEFAULT ''");
         }
     }
-
-    public long addPlan(String title, String content, long startTime, long endTime, int reminderHour, int reminderMinute, String category, String imagePath) {
+    public long addPlan(String title, String content, long startTime, long endTime, int reminderHour,
+                        int reminderMinute, String category, String imagePath) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(COL_TITLE, title);
@@ -79,8 +75,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_IMAGE_PATH, imagePath);
         return db.insert(TABLE_NAME, null, cv);
     }
-
-    public void updatePlan(int id, String newTitle, String newContent, long startTime, long endTime, boolean isCompleted, int reminderHour, int reminderMinute, String category, String imagePath) {
+    public void updatePlan(int id, String newTitle, String newContent, long startTime, long endTime,
+                           boolean isCompleted, int reminderHour, int reminderMinute, String category, String imagePath) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(COL_TITLE, newTitle);
@@ -99,7 +95,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         db.update(TABLE_NAME, cv, COL_ID + "=?", new String[]{String.valueOf(id)});
     }
-
     private int calculateProgress(long startTime, long endTime, boolean isCompleted) {
         if (isCompleted) return 100;
         if (startTime == -1 || endTime == -1) return 0;
@@ -113,7 +108,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long elapsed = now - startTime;
         return (int) ((elapsed * 100) / totalDuration);
     }
-
     private void updateCompletionStatus(long startTime, long endTime) {
         if (startTime == -1 || endTime == -1) return;
         long now = System.currentTimeMillis();
@@ -126,7 +120,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     new String[]{String.valueOf(startTime), String.valueOf(endTime)});
         }
     }
-
     public Plan getPlanById(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_ID + "=?", new String[]{String.valueOf(id)});
@@ -149,7 +142,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return null;
     }
-
     public ArrayList<Plan> getAllPlans() {
         ArrayList<Plan> plans = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -175,7 +167,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return plans;
     }
-
     public ArrayList<Plan> getPlansByCategory(String category) {
         ArrayList<Plan> plans = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -206,12 +197,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return plans;
     }
-
     public ArrayList<Plan> getIncompletePlans() {
         ArrayList<Plan> plans = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_IS_COMPLETED + "=0", null);
-
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID));
@@ -234,7 +223,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return plans;
     }
-
     public ArrayList<Plan> getCompletedPlans() {
         ArrayList<Plan> plans = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -262,12 +250,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return plans;
     }
-
     public void deletePlan(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, COL_ID + "=?", new String[]{String.valueOf(id)});
     }
-
     public void clearAllPlans() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, null, null);

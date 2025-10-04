@@ -13,7 +13,8 @@ public class Plan {
     private int progress;
     private String imagePath;
 
-    public Plan(int id, String title, String content, long startTime, long endTime, boolean isCompleted, int reminderHour, int reminderMinute, String category, int progress, String imagePath) {
+    public Plan(int id, String title, String content, long startTime, long endTime, boolean isCompleted,
+                int reminderHour, int reminderMinute, String category, int progress, String imagePath) {
         this.id = id;
         this.title = title;
         this.content = content;

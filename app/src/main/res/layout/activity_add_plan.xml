@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="#F5F7FA">
 
-    <!-- Thanh công cụ (Toolbar) -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -90,7 +89,6 @@
                         android:completionThreshold="1"
                         android:contentDescription="Nhập hoặc chọn danh mục" />
 
-                    <!-- ImageView và Button chọn/xóa hình ảnh -->
                     <ImageView
                         android:id="@+id/imageViewPlan"
                         android:layout_width="match_parent"
@@ -152,7 +150,6 @@
                         android:gravity="center"
                         android:layout_marginBottom="12dp">
 
-                        <!-- Nút chọn ngày -->
                         <ImageButton
                             android:id="@+id/btnSetReminder"
                             android:layout_width="48dp"
@@ -163,7 +160,6 @@
                             android:layout_marginEnd="16dp"
                             app:tint="#4CAF50" />
 
-                        <!-- Nút chọn giờ -->
                         <ImageButton
                             android:id="@+id/btnSetReminderTime"
                             android:layout_width="48dp"
@@ -174,7 +170,6 @@
                             android:layout_marginEnd="16dp"
                             app:tint="#2196F3" />
 
-                        <!-- Nút hủy -->
                         <ImageButton
                             android:id="@+id/btnCancelReminder"
                             android:layout_width="48dp"
@@ -183,7 +178,6 @@
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:contentDescription="Hủy nhắc nhở"
                             app:tint="#F44336" />
-
                     </LinearLayout>
 
                     <TextView

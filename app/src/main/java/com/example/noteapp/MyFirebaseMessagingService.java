@@ -18,7 +18,6 @@ import java.text.Normalizer;
 import java.util.regex.Pattern;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-
     private static final String TAG = "MyFirebaseMsgService";
     private static final String CHANNEL_ID = "admin_notifications_channel";
 
@@ -74,7 +73,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    // Hàm chuyển đổi chuỗi tiếng Việt thành không dấu và thay khoảng trắng bằng dấu gạch dưới
     public static String convertToNonAccent(String input) {
         if (input == null || input.isEmpty()) return "";
         String temp = Normalizer.normalize(input, Normalizer.Form.NFD);
@@ -84,8 +82,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         result = result.replaceAll("_+", "_");
         return result.trim();
     }
-
-    // Subscribe vào topic chung
     public static void subscribeToTopic() {
         FirebaseMessaging.getInstance().subscribeToTopic("all_users")
                 .addOnCompleteListener(task -> {
@@ -96,7 +92,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
                 });
     }
-
     // Subscribe vào topic theo danh mục
     public static void subscribeToCategoryTopic(String category) {
         if (category == null || category.isEmpty() || category.equals("Tất cả")) {
@@ -112,8 +107,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
                 });
     }
-
-    // Unsubscribe khỏi topic theo danh mục
     public static void unsubscribeFromCategoryTopic(String category) {
         if (category == null || category.isEmpty() || category.equals("Tất cả")) {
             return;

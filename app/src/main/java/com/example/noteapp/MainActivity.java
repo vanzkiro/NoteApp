@@ -57,14 +57,12 @@ public class MainActivity extends AppCompatActivity {
         spinnerCategoryFilter = findViewById(R.id.spinnerCategoryFilter);
         db = new DatabaseHelper(this);
 
-        // Thiết lập Adapter cho Spinner với danh mục từ cơ sở dữ liệu
         updateCategorySpinner();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         restoreAlarms();
         loadPlans();
 
-        // Subscribe vào topic chung và các topic danh mục
         MyFirebaseMessagingService.subscribeToTopic();
         subscribeToPlanCategories();
 
@@ -92,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedCategory = parent.getItemAtPosition(position).toString();
                 filterPlans(searchView.getQuery().toString(), selectedCategory);
-                // Subscribe vào topic của danh mục được chọn
                 MyFirebaseMessagingService.subscribeToCategoryTopic(selectedCategory);
             }
 
@@ -156,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
             }
             filteredPlanList = tempList;
         }
-
         sortPlans(filteredPlanList);
         adapter.updateData(filteredPlanList);
         tvPlanCount.setText("Số kế hoạch: " + filteredPlanList.size());
@@ -167,24 +163,22 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Plan> plans = db.getAllPlans();
         for (Plan plan : plans) {
             if (!plan.isCompleted() && plan.getProgress() < 100 &&
-                    plan.getStartTime() != -1 && plan.getEndTime() != -1) {
+                    plan.getReminderHour() != -1 && plan.getReminderMinute() != -1) {
                 Log.d(TAG, "Khôi phục báo thức cho kế hoạch: " + plan.getTitle());
                 scheduleNextAlarm(this, plan);
-                scheduleCompletionAlarm(this, plan.getId(), plan.getEndTime());
+                if (plan.getEndTime() != -1) {
+                    scheduleCompletionAlarm(this, plan.getId(), plan.getEndTime());
+                }
             }
         }
     }
 
     @SuppressLint("ScheduleExactAlarm")
     private void scheduleNextAlarm(Context context, Plan plan) {
-        if (plan.getStartTime() == -1 || plan.getEndTime() == -1 ||
-                plan.isCompleted() || plan.getProgress() == 100 ||
-                plan.getReminderHour() == -1 || plan.getReminderMinute() == -1) return;
-        long now = System.currentTimeMillis();
-        if (plan.getEndTime() < now) return;
+        if (plan.getReminderHour() == -1 || plan.getReminderMinute() == -1) return;
+        if (plan.isCompleted() || plan.getProgress() == 100) return;
 
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTimeInMillis(plan.getStartTime());
+        long now = System.currentTimeMillis();
         int hour = plan.getReminderHour();
         int minute = plan.getReminderMinute();
 
@@ -199,12 +193,15 @@ public class MainActivity extends AppCompatActivity {
             nextCal.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        long startMillis = startCal.getTimeInMillis();
-        if (nextCal.getTimeInMillis() < startMillis) {
-            nextCal.setTimeInMillis(startMillis);
+        if (plan.getStartTime() != -1 && nextCal.getTimeInMillis() < plan.getStartTime()) {
+            nextCal.setTimeInMillis(plan.getStartTime());
+            nextCal.set(Calendar.HOUR_OF_DAY, hour);
+            nextCal.set(Calendar.MINUTE, minute);
         }
 
-        if (nextCal.getTimeInMillis() > plan.getEndTime()) return;
+        if (plan.getEndTime() != -1 && nextCal.getTimeInMillis() > plan.getEndTime()) {
+            return;
+        }
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationReceiver.class);
@@ -238,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         sortPlans(filteredPlanList);
         setupPlanAdapter(filteredPlanList);
         tvPlanCount.setText("Số kế hoạch: " + filteredPlanList.size());
-        updateCategorySpinner(); // Cập nhật lại danh mục sau khi tải kế hoạch
+        updateCategorySpinner();
     }
 
     private void setupPlanAdapter(ArrayList<Plan> plans) {
@@ -307,8 +304,9 @@ public class MainActivity extends AppCompatActivity {
                     .setMessage("Ứng dụng Ghi chú giúp bạn quản lý công việc hiệu quả!\n\n" +
                             "Cách hoạt động:\n" +
                             "- Quản lý kế hoạch\n" +
-                            "- Thời gian và nhắc nhở: Đặt thời gian bắt đầu, kết thúc và nhận thông báo nhắc nhở hàng ngày tại giờ cố định.\n" +
-                            "- Tiến độ: Tiến độ được tính bằng phần trăm thời gian đã trôi qua từ lúc bắt đầu đến kết thúc (ví dụ: 3 ngày/10 ngày = 30%).\n" +
+                            "- Thời gian và nhắc nhở: Đặt thời gian và " + "nhắc nhở hàng ngày tại giờ cố định.\n" +
+                            "- Tiến độ: Tiến độ được tính bằng phần trăm thời gian đã trôi " +
+                            "qua từ lúc bắt đầu đến kết thúc (ví dụ: 3 ngày/10 ngày = 30%).\n" +
                             "- Hoàn thành: Kế hoạch tự động đánh dấu hoàn thành khi hết thời gian hoặc đạt tiến độ 100%.\n" +
                             "- Thông báo Firebase: Nhận thông báo từ admin qua các danh mục đã chọn.\n\n" +
                             "Bắt đầu tổ chức công việc ngay hôm nay!")
@@ -316,7 +314,6 @@ public class MainActivity extends AppCompatActivity {
                     .show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -324,7 +321,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadPlans();
-        // Cập nhật topic subscription khi resume
         subscribeToPlanCategories();
     }
 }

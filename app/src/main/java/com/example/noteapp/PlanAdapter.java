@@ -12,14 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder> {
-
     private ArrayList<com.example.noteapp.Plan> plans;
     private final OnPlanClickListener planClickListener;
 
     public interface OnPlanClickListener {
         void onPlanClick(com.example.noteapp.Plan plan);
     }
-
     public PlanAdapter(ArrayList<com.example.noteapp.Plan> plans, OnPlanClickListener planClickListener) {
         this.plans = plans;
         this.planClickListener = planClickListener;
@@ -64,11 +62,9 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
     public int getItemCount() {
         return plans.size();
     }
-
     static class PlanViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvStatus, tvCategory, tvProgress;
         ProgressBar progressBarPlan;
-
         public PlanViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvPlanTitle);

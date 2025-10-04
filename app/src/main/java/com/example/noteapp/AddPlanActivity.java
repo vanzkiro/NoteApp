@@ -40,7 +40,6 @@ import java.util.HashSet;
 import java.util.Locale;
 
 public class AddPlanActivity extends AppCompatActivity {
-
     AutoCompleteTextView edtCategory;
     EditText edtTitle, edtContent;
     Button btnSave;
@@ -91,7 +90,6 @@ public class AddPlanActivity extends AppCompatActivity {
 
         // Thiết lập gợi ý danh mục
         setupCategorySuggestions();
-
         // Kiểm tra quyền
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
@@ -114,7 +112,6 @@ public class AddPlanActivity extends AppCompatActivity {
                         REQUEST_CODE_PICK_IMAGE);
             }
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             if (!alarmManager.canScheduleExactAlarms()) {
@@ -122,7 +119,6 @@ public class AddPlanActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_ALARM);
             }
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             intent.setData(android.net.Uri.parse("package:" + getPackageName()));
@@ -161,8 +157,6 @@ public class AddPlanActivity extends AppCompatActivity {
                 }
             }
         }
-
-        // Chọn hình ảnh
         btnPickImage.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
@@ -187,21 +181,20 @@ public class AddPlanActivity extends AppCompatActivity {
             String title = edtTitle.getText().toString().trim();
             String content = edtContent.getText().toString().trim();
             String selectedCategory = edtCategory.getText().toString().trim();
-
             if (selectedCategory.isEmpty()) {
                 selectedCategory = "Khác";
             }
-
             if (!title.isEmpty() && !content.isEmpty()) {
                 if (planId == -1) {
                     long newIdLong = db.addPlan(title, content, startTime, endTime, reminderHour, reminderMinute, selectedCategory, imagePath);
                     int newPlanId = (int) newIdLong;
                     MyFirebaseMessagingService.subscribeToCategoryTopic(selectedCategory);
                     Plan newPlan = db.getPlanById(newPlanId);
-                    if (!newPlan.isCompleted() && newPlan.getProgress() < 100 &&
-                            startTime != -1 && endTime != -1 && reminderHour != -1 && reminderMinute != -1) {
+                    if (!newPlan.isCompleted() && newPlan.getProgress() < 100 && reminderHour != -1 && reminderMinute != -1) {
                         scheduleNextAlarm(this, newPlan);
-                        scheduleCompletionAlarm(this, newPlanId, endTime);
+                        if (endTime != -1) {
+                            scheduleCompletionAlarm(this, newPlanId, endTime);
+                        }
                     }
                     Toast.makeText(this, "Đã thêm kế hoạch", Toast.LENGTH_SHORT).show();
                 } else {
@@ -216,10 +209,11 @@ public class AddPlanActivity extends AppCompatActivity {
                     }
                     cancelPlanAlarms(planId);
                     Plan updatedPlan = db.getPlanById(planId);
-                    if (!updatedPlan.isCompleted() && updatedPlan.getProgress() < 100 &&
-                            startTime != -1 && endTime != -1 && reminderHour != -1 && reminderMinute != -1) {
+                    if (!updatedPlan.isCompleted() && updatedPlan.getProgress() < 100 && reminderHour != -1 && reminderMinute != -1) {
                         scheduleNextAlarm(this, updatedPlan);
-                        scheduleCompletionAlarm(this, planId, endTime);
+                        if (endTime != -1) {
+                            scheduleCompletionAlarm(this, planId, endTime);
+                        }
                     }
                     Toast.makeText(this, "Đã cập nhật kế hoạch", Toast.LENGTH_SHORT).show();
                 }
@@ -231,15 +225,9 @@ public class AddPlanActivity extends AppCompatActivity {
         });
 
         btnSetReminder.setOnClickListener(v -> showDateRangePicker());
-
         btnSetReminderTime.setOnClickListener(v -> {
-            if (startTime == -1) {
-                Toast.makeText(this, "Vui lòng đặt khoảng thời gian trước!", Toast.LENGTH_SHORT).show();
-                return;
-            }
             showTimePicker();
         });
-
         btnCancelReminder.setOnClickListener(v -> {
             if (startTime != -1 || endTime != -1 || reminderHour != -1 || reminderMinute != -1) {
                 startTime = -1;
@@ -250,15 +238,14 @@ public class AddPlanActivity extends AppCompatActivity {
                 if (planId != -1) {
                     cancelPlanAlarms(planId);
                 }
-                Toast.makeText(this, "Đã hủy thời gian kế hoạch", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đã hủy thời gian và nhắc nhở", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Chưa có thời gian kế hoạch để hủy", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Chưa có thời gian hoặc nhắc nhở để hủy", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void setupCategorySuggestions() {
-        // Lấy danh sách danh mục từ cơ sở dữ liệu
         ArrayList<Plan> plans = db.getAllPlans();
         HashSet<String> categories = new HashSet<>();
         for (Plan plan : plans) {
@@ -267,32 +254,30 @@ public class AddPlanActivity extends AppCompatActivity {
                 categories.add(category);
             }
         }
-        // Thêm danh mục mặc định
         categories.add("Khác");
 
-        // Thiết lập adapter cho AutoCompleteTextView
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, new ArrayList<>(categories));
         edtCategory.setAdapter(adapter);
     }
 
     private void updateReminderDisplay() {
+        String text = "";
         if (startTime != -1 && endTime != -1) {
             Calendar startCal = Calendar.getInstance();
             startCal.setTimeInMillis(startTime);
             Calendar endCal = Calendar.getInstance();
             endCal.setTimeInMillis(endTime);
-            String text = "Kế hoạch từ: " + dateFormat.format(startCal.getTime()) +
+            text = "Kế hoạch từ: " + dateFormat.format(startCal.getTime()) +
                     " đến: " + dateFormat.format(endCal.getTime());
-            if (reminderHour != -1 && reminderMinute != -1) {
-                text += ", Nhắc nhở: " + String.format("%02d:%02d", reminderHour, reminderMinute);
-            } else {
-                text += ", Chưa đặt nhắc nhở";
-            }
-            tvReminderPeriod.setText(text);
-        } else {
-            tvReminderPeriod.setText("Chưa đặt thời gian kế hoạch");
         }
+        if (reminderHour != -1 && reminderMinute != -1) {
+            text += (text.isEmpty() ? "" : ", ") + "Nhắc nhở hàng ngày lúc: " + String.format("%02d:%02d", reminderHour, reminderMinute);
+        }
+        if (text.isEmpty()) {
+            text = "Chưa đặt thời gian kế hoạch";
+        }
+        tvReminderPeriod.setText(text);
     }
 
     private void showDateRangePicker() {
@@ -306,7 +291,6 @@ public class AddPlanActivity extends AppCompatActivity {
                 Calendar endDateTime = Calendar.getInstance();
                 endDateTime.set(endYear, endMonth, endDayOfMonth, 23, 59, 59);
                 endTime = endDateTime.getTimeInMillis();
-
                 if (endTime >= startTime) {
                     updateReminderDisplay();
                 } else {
@@ -336,13 +320,10 @@ public class AddPlanActivity extends AppCompatActivity {
 
     @SuppressLint("ScheduleExactAlarm")
     private void scheduleNextAlarm(Context context, Plan plan) {
-        if (plan.getStartTime() == -1 || plan.getEndTime() == -1 || plan.isCompleted() || plan.getProgress() == 100 ||
-                plan.getReminderHour() == -1 || plan.getReminderMinute() == -1) return;
-        long now = System.currentTimeMillis();
-        if (plan.getEndTime() < now) return;
+        if (plan.getReminderHour() == -1 || plan.getReminderMinute() == -1) return;
+        if (plan.isCompleted() || plan.getProgress() == 100) return;
 
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTimeInMillis(plan.getStartTime());
+        long now = System.currentTimeMillis();
         int hour = plan.getReminderHour();
         int minute = plan.getReminderMinute();
 
@@ -357,12 +338,15 @@ public class AddPlanActivity extends AppCompatActivity {
             nextCal.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        long startMillis = startCal.getTimeInMillis();
-        if (nextCal.getTimeInMillis() < startMillis) {
-            nextCal.setTimeInMillis(startMillis);
+        if (plan.getStartTime() != -1 && nextCal.getTimeInMillis() < plan.getStartTime()) {
+            nextCal.setTimeInMillis(plan.getStartTime());
+            nextCal.set(Calendar.HOUR_OF_DAY, hour);
+            nextCal.set(Calendar.MINUTE, minute);
         }
 
-        if (nextCal.getTimeInMillis() > plan.getEndTime()) return;
+        if (plan.getEndTime() != -1 && nextCal.getTimeInMillis() > plan.getEndTime()) {
+            return;
+        }
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationReceiver.class);
@@ -417,7 +401,6 @@ public class AddPlanActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             try {
-                // Sao chép hình ảnh vào bộ nhớ nội bộ
                 imagePath = copyImageToInternalStorage(selectedImage);
                 File imageFile = new File(imagePath);
                 imageViewPlan.setImageURI(Uri.fromFile(imageFile));
@@ -445,17 +428,14 @@ public class AddPlanActivity extends AppCompatActivity {
     }
 
     private String copyImageToInternalStorage(Uri uri) throws IOException {
-        // Tạo thư mục lưu trữ trong bộ nhớ nội bộ
         File directory = new File(getFilesDir(), "images");
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
-        // Tạo tên tệp duy nhất
         String fileName = "plan_image_" + System.currentTimeMillis() + ".jpg";
         File file = new File(directory, fileName);
 
-        // Sao chép dữ liệu từ Uri vào tệp
         try (InputStream inputStream = getContentResolver().openInputStream(uri);
              FileOutputStream outputStream = new FileOutputStream(file)) {
             byte[] buffer = new byte[1024];

@@ -14,10 +14,8 @@ import androidx.core.app.NotificationCompat;
 import java.util.ArrayList;
 
 public class CompletionReceiver extends BroadcastReceiver {
-
     private static final String CHANNEL_ID = "plan_reminder_channel";
     private static final String TAG = "CompletionReceiver";
-
     @Override
     public void onReceive(Context context, Intent intent) {
         int planId = intent.getIntExtra("plan_id", -1);
@@ -32,7 +30,6 @@ public class CompletionReceiver extends BroadcastReceiver {
                         plan.getEndTime(), true, plan.getReminderHour(),
                         plan.getReminderMinute(), category, plan.getImagePath());
                 cancelPlanAlarms(context, planId);
-
                 // Kiểm tra nếu không còn kế hoạch nào trong danh mục
                 ArrayList<Plan> plans = db.getPlansByCategory(category);
                 if (plans.isEmpty()) {
@@ -40,7 +37,6 @@ public class CompletionReceiver extends BroadcastReceiver {
                 }
 
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     NotificationChannel channel = new NotificationChannel(
                             CHANNEL_ID,

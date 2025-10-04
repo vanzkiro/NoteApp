@@ -32,10 +32,12 @@ public class NotificationReceiver extends BroadcastReceiver {
             ArrayList<Plan> plans = db.getAllPlans();
             for (Plan plan : plans) {
                 if (!plan.isCompleted() && plan.getProgress() < 100 &&
-                        plan.getStartTime() != -1 && plan.getEndTime() != -1) {
+                        plan.getReminderHour() != -1 && plan.getReminderMinute() != -1) {
                     Log.d(TAG, "Restoring alarm for plan: " + plan.getTitle());
                     scheduleNextAlarm(context, plan);
-                    scheduleCompletionAlarm(context, plan.getId(), plan.getEndTime());
+                    if (plan.getEndTime() != -1) {
+                        scheduleCompletionAlarm(context, plan.getId(), plan.getEndTime());
+                    }
                 }
             }
             return;
@@ -44,7 +46,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         String title = intent.getStringExtra("plan_title");
         int planId = intent.getIntExtra("plan_id", -1);
         Log.d(TAG, "Showing notification for planId: " + planId + ", Title: " + title);
-
         if (planId == -1 || title == null) {
             Log.e(TAG, "Invalid planId or title in notification intent");
             return;
@@ -58,14 +59,12 @@ public class NotificationReceiver extends BroadcastReceiver {
             return;
         }
 
-        // Tạo PendingIntent để mở PlanDetailActivity
         Intent detailIntent = new Intent(context, PlanDetailActivity.class);
         detailIntent.putExtra("plan_id", planId);
         detailIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, planId, detailIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // Tạo thông báo
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_alert)
                 .setContentTitle("Nhắc nhở: " + title)
@@ -78,8 +77,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         createNotificationChannel(context);
         notificationManager.notify(planId, builder.build());
         Log.d(TAG, "Notification shown for planId: " + planId);
-
-        // Lên lịch thông báo tiếp theo
         scheduleNextAlarm(context, plan);
     }
 
@@ -96,14 +93,10 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     @SuppressLint("ScheduleExactAlarm")
     private void scheduleNextAlarm(Context context, Plan plan) {
-        if (plan.getStartTime() == -1 || plan.getEndTime() == -1 ||
-                plan.isCompleted() || plan.getProgress() == 100 ||
-                plan.getReminderHour() == -1 || plan.getReminderMinute() == -1) return;
-        long now = System.currentTimeMillis();
-        if (plan.getEndTime() < now) return;
+        if (plan.getReminderHour() == -1 || plan.getReminderMinute() == -1) return;
+        if (plan.isCompleted() || plan.getProgress() == 100) return;
 
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTimeInMillis(plan.getStartTime());
+        long now = System.currentTimeMillis();
         int hour = plan.getReminderHour();
         int minute = plan.getReminderMinute();
 
@@ -118,12 +111,15 @@ public class NotificationReceiver extends BroadcastReceiver {
             nextCal.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        long startMillis = startCal.getTimeInMillis();
-        if (nextCal.getTimeInMillis() < startMillis) {
-            nextCal.setTimeInMillis(startMillis);
+        if (plan.getStartTime() != -1 && nextCal.getTimeInMillis() < plan.getStartTime()) {
+            nextCal.setTimeInMillis(plan.getStartTime());
+            nextCal.set(Calendar.HOUR_OF_DAY, hour);
+            nextCal.set(Calendar.MINUTE, minute);
         }
 
-        if (nextCal.getTimeInMillis() > plan.getEndTime()) return;
+        if (plan.getEndTime() != -1 && nextCal.getTimeInMillis() > plan.getEndTime()) {
+            return;
+        }
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationReceiver.class);

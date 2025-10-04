@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="#F5F7FA">
 
-    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -42,7 +41,6 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Hình ảnh -->
                     <ImageView
                         android:id="@+id/imageViewDetail"
                         android:layout_width="match_parent"
@@ -51,7 +49,6 @@
                         android:visibility="gone"
                         android:contentDescription="Hình ảnh kế hoạch" />
 
-                    <!-- Tiêu đề + Trạng thái -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -79,7 +76,6 @@
                             android:textStyle="italic" />
                     </LinearLayout>
 
-                    <!-- Danh mục -->
                     <TextView
                         android:id="@+id/tvDetailCategory"
                         android:layout_width="match_parent"
@@ -89,7 +85,6 @@
                         android:textColor="#6B7280"
                         android:paddingBottom="4dp" />
 
-                    <!-- Nội dung -->
                     <TextView
                         android:id="@+id/tvDetailContent"
                         android:layout_width="match_parent"
@@ -99,8 +94,6 @@
                         android:textColor="#1F2937"
                         android:paddingBottom="20dp" />
 
-
-
                     <TextView
                         android:id="@+id/tvDetailReminder"
                         android:layout_width="match_parent"
@@ -109,8 +102,8 @@
                         android:textColor="#6B7280"
                         android:textSize="14sp" />
 
-                    <!-- Tiến độ -->
                     <LinearLayout
+                        android:id="@+id/progressContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -140,7 +133,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Button -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -7,7 +7,6 @@
     android:background="#F5F7FA"
     android:padding="16dp">
 
-    <!-- Thanh công cụ (Toolbar) -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -18,9 +17,6 @@
         app:titleTextColor="#FFFFFF"
         android:contentDescription="Thanh công cụ" />
 
-
-
-    <!-- Số lượng kế hoạch hoàn thành -->
     <TextView
         android:id="@+id/tvCompletedCount"
         android:layout_width="match_parent"
@@ -30,8 +26,6 @@
         android:textColor="#1F2937"
         android:paddingBottom="8dp"
         android:contentDescription="Số lượng đã hoàn thành" />
-
-    <!-- Thống kê theo danh mục -->
     <TextView
         android:id="@+id/tvCategoryStats"
         android:layout_width="match_parent"
@@ -41,9 +35,6 @@
         android:textColor="#1F2937"
         android:paddingBottom="16dp"
         android:contentDescription="Thống kê theo danh mục" />
-
-
-    <!-- RecyclerView hiển thị danh sách kế hoạch hoàn thành -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
