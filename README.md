@@ -7,7 +7,7 @@ NoteApp là ứng dụng miễn phí giúp người dùng quản lý kế hoạc
 - Không quảng cáo, dữ liệu lưu cục bộ.
 
 ## Tải và Cài đặt
-1. Tải file APK từ [GitHub Releases](https://github.com/vanzkiro/NoteApp/releases/download/v1.0.0/app-debug.apk).
+1. Tải file APK từ [GitHub Releases](https://github.com/vanzkiro/NoteApp/releases/download/v1.0.0/Ghi.chu.-.D.n.gi.n.apk).
 2. Bật "Nguồn không xác định" trong Cài đặt > Bảo mật.
 3. Cài đặt và bật quyền thông báo, tự khởi động, bỏ qua tối ưu hóa pin.
 4. Mở app để quản lý kế hoạch!
